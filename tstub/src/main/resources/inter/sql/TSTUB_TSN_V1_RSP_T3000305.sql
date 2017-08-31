@@ -14,7 +14,7 @@ create table TSTUB_TSN_V1_RSP_T3000305
   SERVTYPE          VARCHAR2(50 CHAR),
   EFFTIMSI          VARCHAR2(50 CHAR),
   SERVPARAMINFO     VARCHAR2(50 CHAR)
-)
+);
 -- Add comments to the table 
 comment on table TSTUB_TSN_V1_RSP_T3000305
   is '数据功能暂停/恢复请求接口';

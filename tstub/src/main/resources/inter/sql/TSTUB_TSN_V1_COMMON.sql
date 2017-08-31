@@ -39,7 +39,7 @@ create table TSTUB_TSN_V1_COMMON
   RSPDESC      VARCHAR2(50 CHAR),
   SVCCONT      VARCHAR2(2000 CHAR),
   COMMON       VARCHAR2(2000 CHAR)
-)
+);
 -- Add comments to the table 
 comment on table TSTUB_TSN_V1_COMMON
   is '网状网接口规范报文头';

@@ -3,24 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>中国移动</title>
-<style type = "text/css">
-    body{ font: 12px Arial;}
-    path{
-        stroke: steelblue;
-        stroke-width: 2;
-        fill: none;
-    }
-    .axis path,
-    .axis line{
-        fill: none;
-        stroke: grey;
-        stroke-width: 1;
-        shape-rendering: crispEdges;
-    }
-</style>
-<script  type="text/javascript" src="js/d3.js"></script>
+<script  type="text/javascript" src="${request.contextPath}/js/d3.js"></script>
 </head>
 <body>
 	<h1>中国移动</h1>
+	<svg style="width: 100%;height: 100%;">
+		<circle cx="100" cy="50" r="40" stroke="black"
+stroke-width="2" fill="red"/>
+	</svg>
 </body>
 </html>

@@ -16,7 +16,7 @@ create table TSTUB_TSN_V1_RSP_T3000321
   EFFTIMSI          VARCHAR2(50 CHAR),
   EXPTIMSI          VARCHAR2(50 CHAR),
   SERVPARAMINFO     VARCHAR2(50 CHAR)
-)
+);
 -- Add comments to the table 
 comment on table TSTUB_TSN_V1_RSP_T3000321
   is '国际长途功能开通/关闭接口';

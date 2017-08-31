@@ -29,7 +29,7 @@ create table TSTUB_TSN_V1_RSP_T3000309
   IDDVALIDITYDATE   VARCHAR2(50 CHAR),
   IDDFUNCSTAT       VARCHAR2(50 CHAR),
   SERVPARAMINFO     VARCHAR2(50 CHAR)
-)
+);
 -- Add comments to the table 
 comment on table TSTUB_TSN_V1_RSP_T3000309
   is '用户基本信息查询接口';

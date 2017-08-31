@@ -20,7 +20,7 @@ create table TSTUB_IRCP_V1_COMMON
   RSPDESC      VARCHAR2(50 CHAR),
   BODY         VARCHAR2(50 CHAR),
   COMMON       VARCHAR2(2000 CHAR)
-)
+);
 -- Add comments to the table 
 comment on table TSTUB_IRCP_V1_COMMON
   is '内容商接口规范报文头';
