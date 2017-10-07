@@ -1,0 +1,28 @@
+@charset "UTF-8";
+body {
+	background-color: yellow;
+}
+.fun_area {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	
+	height: 100px;
+	width: 500px;
+	background-color: blue;
+}
+.light_area {
+	position: absolute;
+	float: right;
+	right: 0px;
+	top: 0px;
+	
+	height: 100px;
+	width: 100px;
+	background-color: green;
+}
+.main_area {
+	position: absolute;
+	left: 0px;
+	top: 
+}

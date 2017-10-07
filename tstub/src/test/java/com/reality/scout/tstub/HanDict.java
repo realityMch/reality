@@ -6,7 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 汉字字典，可以查询汉字的拼音，部首和笔画
@@ -35,11 +39,51 @@ public class HanDict {
 	/** 拼音数据（英文字母注音）下标 */
 	private static final int INDEX_PY_EN = 1;
 
+	
+	public static final Map<Integer, Set<String>> bhMap = new HashMap<Integer, Set<String>>();
+	public static final Map<String, Set<String>> pyMap = new HashMap<String, Set<String>>();
+
 	static {
 		try {
 			loadHanData();
 		} catch (IOException e) {
 			System.err.println("载入汉字数据错误：" + e.getMessage());
+		}
+		
+		try {
+			char[] c = {0x4E00};
+			while (c[0] < 0x9FCB) {
+				String unicode = new String(c);
+				String hz = new String(unicode.getBytes("UTF-8"),"UTF-8");
+				
+				Integer length = HanDict.getBH(hz).length();
+				List<String> pyList = HanDict.getPY(hz.toCharArray()[0], false);
+				
+				if (bhMap.get(length) != null) {
+					bhMap.get(length).add(hz);
+				} else {
+					Set<String> set = new HashSet<String>();
+					set.add(hz);
+					bhMap.put(length, set);
+				}
+				
+				for (String py : pyList) {
+					if (py != null && py.length() > 0) {
+						String firstPy = py.substring(0, 1);
+						if (pyMap.get(firstPy) != null) {
+							pyMap.get(firstPy).add(hz);
+						} else {
+							Set<String> set = new HashSet<String>();
+							set.add(hz);
+							pyMap.put(firstPy, set);
+						}
+					}
+				}
+				
+				c[0]++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -115,10 +159,28 @@ public class HanDict {
 	public static List<String> getPY(char ch, boolean useHanFormat) {
 		List<String> list = new ArrayList<String>();
 		if (isHan(ch)) {
-			int i = useHanFormat ? INDEX_PY_HAN : INDEX_PY_EN;
+//			int i = useHanFormat ? INDEX_PY_HAN : INDEX_PY_EN;
 			String pyStr = HAN_DATA[ch - HAN_MIN].split("\\|")[INDEX_PY];
-			for (String py : pyStr.split(";")) {
-				list.add(py.split(",")[i]);
+			if (pyStr != null && pyStr.length() > 0) {
+				for (String py : pyStr.split(";")) {
+					String[] str = py.split(",");
+					if (str.length <= 0) {
+						System.out.println("规则出错");
+					} else if (str.length == 1) {
+						System.out.println("该汉字没有英文拼音：" + ch);
+						if (useHanFormat) {
+							list.add(str[INDEX_PY_HAN]);
+						}
+					} else if (str.length > 1) {
+						if (useHanFormat) {
+							list.add(str[INDEX_PY_HAN]);
+						} else {
+							list.add(str[INDEX_PY_EN]);
+						}
+					}
+				}
+			} else {
+				System.out.println("该汉字拼音不可查：" + ch);
 			}
 		}
 		return list;
@@ -197,33 +259,34 @@ public class HanDict {
 	 * 使用测试
 	 */
 	public static void main(String[] args) {
-		char ch = '郑';
-		System.out.println(ch + "的拼音（中式注音）为：" + HanDict.getPY(ch, true));
-		System.out.println(ch + "的拼音（英式注音）为：" + HanDict.getPY(ch, false));
-		System.out.println(ch + "的部首为　　　　　　：" + HanDict.getBS(ch));
-		System.out.println(ch + "的部首笔画为　　　　：" + HanDict.getBH(HanDict.getBS(ch)));
-		System.out.println(ch + "的笔画顺序为　　　　：" + HanDict.getBH(ch));
-		System.out.println(ch + "的笔画数为　　　　　：" + HanDict.getBH(ch).length());
-		System.out.println();
-		ch = '大';
-		System.out.println(ch + "的拼音（中式注音）为：" + HanDict.getPY(ch, true));
-		System.out.println(ch + "的拼音（英式注音）为：" + HanDict.getPY(ch, false));
-		System.out.println(ch + "的部首为　　　　　　：" + HanDict.getBS(ch));
-		System.out.println(ch + "的部首笔画为　　　　：" + HanDict.getBH(HanDict.getBS(ch)));
-		System.out.println(ch + "的笔画顺序为　　　　：" + HanDict.getBH(ch));
-		System.out.println(ch + "的笔画数为　　　　　：" + HanDict.getBH(ch).length());
-		System.out.println();
-		ch = 'a';
-		System.out.println(ch + "的拼音（中式注音）为：" + HanDict.getPY(ch, true));
-		System.out.println(ch + "的拼音（英式注音）为：" + HanDict.getPY(ch, false));
-		System.out.println(ch + "的部首为　　　　　　：" + HanDict.getBS(ch));
-		System.out.println(ch + "的部首笔画为　　　　：" + HanDict.getBH(HanDict.getBS(ch)));
-		System.out.println(ch + "的笔画顺序为　　　　：" + HanDict.getBH(ch));
-		System.out.println(ch + "的笔画数为　　　　　：" + HanDict.getBH(ch).length());
-		System.out.println();
-
-		String str = "今年的收入为123万。";
-		System.out.println(str + " 的拼音（中式）为：" + getPY(str, true));
-		System.out.println(str + " 的拼音（英式）为：" + getPY(str, false));
+//		char ch = '郑';
+//		System.out.println(ch + "的拼音（中式注音）为：" + HanDict.getPY(ch, true));
+//		System.out.println(ch + "的拼音（英式注音）为：" + HanDict.getPY(ch, false));
+//		System.out.println(ch + "的部首为　　　　　　：" + HanDict.getBS(ch));
+//		System.out.println(ch + "的部首笔画为　　　　：" + HanDict.getBH(HanDict.getBS(ch)));
+//		System.out.println(ch + "的笔画顺序为　　　　：" + HanDict.getBH(ch));
+//		System.out.println(ch + "的笔画数为　　　　　：" + HanDict.getBH(ch).length());
+//		System.out.println();
+//		ch = '啊';
+//		System.out.println(ch + "的拼音（中式注音）为：" + HanDict.getPY(ch, true));
+//		System.out.println(ch + "的拼音（英式注音）为：" + HanDict.getPY(ch, false));
+//		System.out.println(ch + "的部首为　　　　　　：" + HanDict.getBS(ch));
+//		System.out.println(ch + "的部首笔画为　　　　：" + HanDict.getBH(HanDict.getBS(ch)));
+//		System.out.println(ch + "的笔画顺序为　　　　：" + HanDict.getBH(ch));
+//		System.out.println(ch + "的笔画数为　　　　　：" + HanDict.getBH(ch).length());
+//		System.out.println();
+//		ch = '蒙';
+//		System.out.println(ch + "的拼音（中式注音）为：" + HanDict.getPY(ch, true));
+//		System.out.println(ch + "的拼音（英式注音）为：" + HanDict.getPY(ch, false));
+//		System.out.println(ch + "的部首为　　　　　　：" + HanDict.getBS(ch));
+//		System.out.println(ch + "的部首笔画为　　　　：" + HanDict.getBH(HanDict.getBS(ch)));
+//		System.out.println(ch + "的笔画顺序为　　　　：" + HanDict.getBH(ch));
+//		System.out.println(ch + "的笔画数为　　　　　：" + HanDict.getBH(ch).length());
+//		System.out.println();
+//
+//		String str = "今年的收入为123万。";
+//		System.out.println(str + " 的拼音（中式）为：" + getPY(str, true));
+//		System.out.println(str + " 的拼音（英式）为：" + getPY(str, false));
+		System.out.println(pyMap.get("a").size());
 	}
 }
